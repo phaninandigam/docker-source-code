@@ -1,0 +1,23 @@
+---
+services:
+  tomcat:
+    ports: 
+      - 8081:8080
+    restart: always
+    image: tomcat:latest  
+
+  jenkins:
+    ports:
+      - 8090:8080
+      - 50009:50000
+    volumes:
+      - my_jenkins12:/var/jenkins_home
+    image: jenkins/jenkins:latest
+    restart: always
+    container_name: kedhar_jenkins
+volumes:
+  my_jenkins12:
+  
+    
+
+
