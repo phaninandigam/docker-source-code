@@ -1,0 +1,25 @@
+FROM maven:3.5-jdk-8 as build
+WORKDIR /app
+COPY . .
+RUN mvn clean package
+
+#FInal Stage
+FROM tomcat:8.0.20-jre8
+COPY --from=build /app/target/maven-web-app*.war /usr/local/tomcat/webapps/maven-web-application.war
+
+
+
+
+Explanation Of The Code
+Build Stage (build):
+FROM maven:3.5-jdk-8 as build: This line designates the official Maven image with JDK 8 installed as the basis image for the build stage.
+WORKDIR /app: Sets the Docker container's working directory to /app.
+COPY . .: Moves each file from the current directory (which includes the Dockerfile) to the /app directory of the container.
+RUN mvn clean package: Performs out the project's cleanup and WAR file packaging using the Maven command. The Maven project is assumed to be in the root directory with this command.
+Final Stage:
+FROM tomcat:8.0.20-jre8: Use the official Tomcat image with JRE 8 installed as the basis image for the final step.
+COPY --from=build /app/target/maven-web-app*.war /usr/local/tomcat/webapps/maven-web-application.war: 
+Copies the generated WAR file from the build step into the final image's Tomcat webapps directory (/usr/local/tomcat/webapps/). The file is being copied from the previous build stage, according to by the --from=build flag. To take into account version numbers or other variations in the WAR file name, use the wildcard pattern maven-web-app*.war.
+
+Stop At A Specific Build Stage
+docker build --target build -t your-image-name .
